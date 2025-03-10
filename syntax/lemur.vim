@@ -1,4 +1,4 @@
-" Vim lemure syntax file
+" Vim lemur syntax file
 " Language: Less Annoying Markup Experience documentation format
 " Website:
 " Maintainer: Nicolai Waniek 
@@ -10,20 +10,20 @@ endif
 
 syn case ignore
 
-syn keyword lemureTodo FIXME TODO XXX NOTE
+syn keyword lemurTodo FIXME TODO XXX NOTE
 
 " Headers (Markdown style)
-syntax match lemureHeader /^##* .*$/
-			\ contains=lemureRefDeclInHeader
+syntax match lemurHeader /^##* .*$/
+			\ contains=lemurRefDeclInHeader
 
-" lemure (code block) directive (:: [language])
-syn match lemureCodeBlockHeader 
+" lemur (code block) directive (:: [language])
+syn match lemurCodeBlockHeader 
 			\ /^::\s*\(\k\+\)\?$/
 
 " Define a general region for the code block
-syn region lemureCodeBlock 
+syn region lemurCodeBlock 
 			\ contained 
-			\ matchgroup=lemureCodeBlockHeader 
+			\ matchgroup=lemurCodeBlockHeader 
 			\ fold
 			\ start=/^::\s*\(\k\+\)\?$/
       		\ end=/^\ze\S/
@@ -31,8 +31,8 @@ syn region lemureCodeBlock
 
 " Define supported languages
 " TODO: bibtex support
-if !exists('g:lemure_syntax_code_list')
-    let g:lemure_syntax_code_list = {
+if !exists('g:lemur_syntax_code_list')
+    let g:lemur_syntax_code_list = {
         \ 'cpp':    ['cpp', 'c++'],
         \ 'python': ['python'],
         \ 'java':   ['java'],
@@ -42,89 +42,89 @@ if !exists('g:lemure_syntax_code_list')
 endif
 
 " Dynamically load syntax highlighting for each language
-for s:filetype in keys(g:lemure_syntax_code_list)
+for s:filetype in keys(g:lemur_syntax_code_list)
     unlet! b:current_syntax
     let s:alias_pattern = ''
 				\.'\%(' 
-				\.join(g:lemure_syntax_code_list[s:filetype], '\|') 
+				\.join(g:lemur_syntax_code_list[s:filetype], '\|') 
 				\. '\)'
 
-    exe 'syn include @lemure'.s:filetype.' syntax/'.s:filetype.'.vim'
-    exe 'syn region lemureCodeBlock'.s:filetype
-                \.' matchgroup=lemureCodeBlockHeader fold'
+    exe 'syn include @lemur'.s:filetype.' syntax/'.s:filetype.'.vim'
+    exe 'syn region lemurCodeBlock'.s:filetype
+                \.' matchgroup=lemurCodeBlockHeader fold'
                 \.' start="^::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)"'
                 \.' skip="^$"'
 				\.' end="^\z1\@!"'
-                \.' contains=@NoSpell,@lemure'.s:filetype
+                \.' contains=@NoSpell,@lemur'.s:filetype
 
-    exe 'syn cluster lemureCodeDirectives add=lemureCodeBlock'.s:filetype
+    exe 'syn cluster lemurCodeDirectives add=lemurCodeBlock'.s:filetype
 endfor
 
 " inline math mode with $$...$$
-syn region lemureInlineMath start="\\\@<!\$\$" end="\$\$" skip="\\\$" contains=@lemuretex keepend
+syn region lemurInlineMath start="\\\@<!\$\$" end="\$\$" skip="\\\$" contains=@lemurtex keepend
 
 " bold and italic stuff
-syn region lemureBold       
+syn region lemurBold       
 			\ start="\*\*\S\@="   
 			\ end="\S\@<=\*\*\|^$"   
 			\ skip="\\\*" 
 
-syn region lemureItalic     
+syn region lemurItalic     
 			\ start="__\S\@="     
 			\ end="\S\@<=__\|^$"     
 			\ skip="\\_" 
 
-syn region lemureBoldItalic 
+syn region lemurBoldItalic 
 			\ start="\*\*__\S\@=" 
 			\ end="\S\@<=__\*\*\|^$" 
 			\ skip="\\_\*" 
 
-syn region lemureItalicBold 
+syn region lemurItalicBold 
 			\ start="__\*\*\S\@=" 
 			\ end="\S\@<=\*\*__\|^$" 
 			\ skip="\\\*_" 
 
 " reference declaration
-syn match lemureRefDecl
+syn match lemurRefDecl
 			\ /\v^\s*\^(\w+):/
 
-syn match lemureRefDeclInHeader 
+syn match lemurRefDeclInHeader 
 			\ /\v\^(\w+)\s*$/
 			\ contained
 
 " inline de-referencing
-syn match lemureInlineRefs 
+syn match lemurInlineRefs 
 			\ /\v(^|[[:space:]+])\@(\((\w+%(\s*,\s*\w+)*)\)|\w+)/
 
 " link blocks and their contents
-syn match lemureLinkBlock
+syn match lemurLinkBlock
 			\ /\v\[[^\]]*\](\@\(.*\)|\@[^[:space:]]+|\(.*\))/
-			\ contains=lemureLinkText,lemureLinkRefs,lemureLinkURL,lemureLinkImg
+			\ contains=lemurLinkText,lemurLinkRefs,lemurLinkURL,lemurLinkImg
 
-syn match lemureLinkText  
+syn match lemurLinkText  
 			\ /\v\[[^\]]*\]/                   
 			\ contained
 
-syn match lemureLinkRefs  
+syn match lemurLinkRefs  
 			\ /\v\@(\([^)]+\)|[^[:space:]]+)/  
 			\ contained
 
-" syn match lemureURL
+" syn match lemurURL
 " 			\ /https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*/
 " 			\ contained
 
-syn match lemureLinkURL   
+syn match lemurLinkURL   
 			\ /(https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*)/
 			\ contained
 
-syn match lemureLinkImg
+syn match lemurLinkImg
 			\ /(img::\(.*\))/
 			\ contained
 
-syntax match lemureEmail    
+syntax match lemurEmail    
 			\ /\v<\w+\@\w+\.\w+>/
 
-syntax match lemureShortURL 
+syntax match lemurShortURL 
 			\ /<https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*>/
 
 
@@ -132,53 +132,53 @@ highlight Bold       term=bold         cterm=bold         gui=bold
 highlight Italic     term=italic       cterm=italic       gui=italic
 highlight BoldItalic term=italic,bold  cterm=italic,bold  gui=italic,bold
 
-hi def link lemureTodo              Todo
-hi def link lemureHeader            Title
-hi def link lemureItalic            Italic
-hi def link lemureBold              Bold
-hi def link lemureBoldItalic        BoldItalic
-hi def link lemureItalicBold        BoldItalic
-hi def link lemureCodeBlockHeader   PreProc
-hi def link lemureInlineMath        Statement
+hi def link lemurTodo              Todo
+hi def link lemurHeader            Title
+hi def link lemurItalic            Italic
+hi def link lemurBold              Bold
+hi def link lemurBoldItalic        BoldItalic
+hi def link lemurItalicBold        BoldItalic
+hi def link lemurCodeBlockHeader   PreProc
+hi def link lemurInlineMath        Statement
 
 
-hi def link lemureLinkBlock					Statement
-hi def link lemureLinkText					Statement
-hi def link lemureLinkRefs					Function
-hi def link lemureLinkURL					Function
-hi def link lemureLinkImg					Function
+hi def link lemurLinkBlock					Statement
+hi def link lemurLinkText					Statement
+hi def link lemurLinkRefs					Function
+hi def link lemurLinkURL					Function
+hi def link lemurLinkImg					Function
 
-hi def link lemureInlineRefs				Function
+hi def link lemurInlineRefs				Function
 
-hi def link lemureEmail						String
-hi def link lemureLink						String
-hi def link lemureShortURL					String
+hi def link lemurEmail						String
+hi def link lemurLink						String
+hi def link lemurShortURL					String
 
-hi def link lemureRefDecl			Identifier
-hi def link lemureRefDeclInHeader	Identifier
+hi def link lemurRefDecl			Identifier
+hi def link lemurRefDeclInHeader	Identifier
 
 
 " Highlight !table and its reference
-" syn match lemureTable /^[:space:]*!table[:space:]*\(\w+\)\(^\w*\)\?/ contains=lemureTableKeyword,lemureTableRef
-" hi def link lemureTableKeyword PreProc
-" hi def link lemureTableRef     Identifier
-" hi def link lemureTable        Todo
+" syn match lemurTable /^[:space:]*!table[:space:]*\(\w+\)\(^\w*\)\?/ contains=lemurTableKeyword,lemurTableRef
+" hi def link lemurTableKeyword PreProc
+" hi def link lemurTableRef     Identifier
+" hi def link lemurTable        Todo
 
-syn match lemureTable /^!table\s\+\S\+\(\s\+\^table_\S\+\)\?/ contains=lemureTableKeyword,lemureTableRef
-hi def link lemureTableKeyword Keyword
-hi def link lemureTableRef     Identifier
+syn match lemurTable /^!table\s\+\S\+\(\s\+\^table_\S\+\)\?/ contains=lemurTableKeyword,lemurTableRef
+hi def link lemurTableKeyword Keyword
+hi def link lemurTableRef     Identifier
 
 " Match the !cols line and highlight different components
-syn match lemureTableCols /^!cols\s\+.*$/ contains=lemureTableColsKeyword,lemureTableSeparator,lemureTableAlign
-syn match lemureTableColsKeyword /^!cols/ contained
-syn match lemureTableSeparator /[|,]/ contained
-syn match lemureTableAlign /\[\zs[lrctb]\+\ze\]/ contained
+syn match lemurTableCols /^!cols\s\+.*$/ contains=lemurTableColsKeyword,lemurTableSeparator,lemurTableAlign
+syn match lemurTableColsKeyword /^!cols/ contained
+syn match lemurTableSeparator /[|,]/ contained
+syn match lemurTableAlign /\[\zs[lrctb]\+\ze\]/ contained
 
 " Highlight groups
-hi def link lemureTableColsKeyword Keyword
-hi def link lemureTableSeparator Operator
-hi def link lemureTableAlign Special
+hi def link lemurTableColsKeyword Keyword
+hi def link lemurTableSeparator Operator
+hi def link lemurTableAlign Special
  
 " Match table rows (indented lines after !cols)
-syn region lemureTableRow start=/^\s\{1,}/ end=/$/ contains=lemureTableSeparator
-hi def link lemureTableRow Normal
+syn region lemurTableRow start=/^\s\{1,}/ end=/$/ contains=lemurTableSeparator
+hi def link lemurTableRow Normal
