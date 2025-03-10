@@ -1,8 +1,8 @@
 " Vim lemur syntax file
 " Language: Less Annoying Markup Experience documentation format
-" Website:
+" Website: https://github.com/nwaniek/vim-lemur
 " Maintainer: Nicolai Waniek 
-" Latest Revision: 2025-03-07
+" Latest Revision: 2025-03-10
 
 if exists('b:current_syntax')
 	finish
