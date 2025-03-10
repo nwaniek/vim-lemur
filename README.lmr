@@ -122,7 +122,7 @@ Putting all together, the following is an example of table.
 
 I need math, often in some inline form, so we simply adopt LaTeX inline math
 with the difference of using two `$` instead of one: $$\sum_{i=1}^{10}{i^2}$$.
-If you want to have longer math, use a LaTeX code block (see @code_blocks).
+If you want to have longer math, use a [LaTeX code block]@tex_code_block
 
 
 ## Code Blocks ^code_blocks
@@ -145,7 +145,7 @@ Italic bold: __**italic bold**__
 	code block without any language specification
 
 
-:: tex
+:: tex ^tex_code_block
 
 	\section{Hello World}
 
