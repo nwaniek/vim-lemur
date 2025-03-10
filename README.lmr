@@ -46,7 +46,6 @@ NOTE
 
 ## How to use tables ^tables
 
-
 Tables are declared by using a `!table` statement which needs to be the first on
 a line (except preceding whitespace), followed by an optinal human readable
 title of the table, followed by an optinal referene (see @references further
@@ -54,7 +53,8 @@ below).
 
 That means that the following lines all declare a new table
 
-::
+:: lemur
+
 	!table
 	!table human readable table name
 	!table some title ^table_ref
@@ -69,7 +69,8 @@ The next part of declaring a table is in specifying columns and their names.
 This also includes specifying column separators, and optionally an alignment
 attribute for each column. Examples might help:
 
-:: 
+:: lemur
+
 	!cols First, Second, Third 
 	!cols First, Second; Third | Fourth
 	!cols First[l], Second[r] | Third[c]
@@ -89,10 +90,9 @@ simply escape it using the `\` symbol, i.e. `\"` as on the fourth line.
 
 Then, there's also the possibility to add a caption to a table. This is done via
 
-::
+:: lemur
+
 	!caption Here goes a long caption...
-
-
 
 Finally, you might want to separate some lines from each other in different
 ways. At the moment I use `===` and `---` to indicate separations. There might
@@ -117,7 +117,6 @@ Putting all together, the following is an example of table.
 		Steve   , 27 , Denmark  | yes
 
 
-
 ## Inline Math ^inline_math
 
 I need math, often in some inline form, so we simply adopt LaTeX inline math
@@ -125,7 +124,7 @@ with the difference of using two `$` instead of one: $$\sum_{i=1}^{10}{i^2}$$.
 If you want to have longer math, use a [LaTeX code block]@tex_code_block
 
 
-## Code Blocks ^code_blocks
+## Formatting ^formatting
 
 `this` was a code example.
 
@@ -134,6 +133,21 @@ Some text where **this** is supposed to be bold and __this__ is italic.
 Bold italic: **__bold italic__**
 Italic bold: __**italic bold**__
 
+
+## Code Blocks ^code_blocks
+
+A code block is started by `::`, followed by an indented block of code. This is
+mostly identical to how `.. code-block::` works in rST, just shorter. If no
+language is specified after `::`, then this could be styled simply in monospace
+font. But, you can also indicate which language this by using `:: lang`, where
+lang corresponds to some language. for instance `:: cpp` means there's a block
+of C++ code coming.
+
+In addition, you can attach references to language blocks just as you can attach
+references anywhere else. For instance `:: cpp ^arena_alloc_ref` creates a C++
+block with a reference named `arena_alloc_ref`.
+
+Here are some examples:
 
 :: sh
 	#!/bin/sh
@@ -152,7 +166,6 @@ Italic bold: __**italic bold**__
 	$\sum_{i=1}^{10}{i^2}$
 
 
-
 :: cpp
 
 	void main() {
@@ -167,6 +180,7 @@ Italic bold: __**italic bold**__
 	s = "1234"
 	def main():
 		print("Hello, World")
+
 
 ::
 
@@ -242,7 +256,7 @@ empty text:
 
 [some text]@ref will write "some text" and link to ref
 
-Some more e:morexamples.
+Some more examples.
 @doe2025 will link directly to (internal) reference doe2025, and
 @(doe2025, alice2024) will link to both, doe2025 and alice2024
 here we go [better text]@(doe2025, alice2024) this here will reference both (i.e. similar
@@ -254,6 +268,7 @@ replaces the reference with the text.
 
 [] some block with a box before that should not be highlighted
 
+
 ## Literature
 
 ^doe2025:   John Doe, 2025, Journal of Does, Article Title, Publisher.
@@ -261,6 +276,6 @@ replaces the reference with the text.
 
 
 ## other links
-#
+
 ^website: <https://rochus.net>
 ^mail:    <rochus@rochus.net>
