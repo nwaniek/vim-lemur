@@ -178,27 +178,60 @@ Italic bold: __**italic bold**__
 
 ## Images
 
-I wanted to keep images separate from the text, so similar to the `!table`
-statement, there's and `!img` statement that can have a title, a reference, and
-of course it needs to know where the source for the image is.
+I wanted to keep images separate from the text, similar to how images are
+handled in latex, and similar to the `!table` statement above. Hence, there's
+and `!img` statement that can have a title, a reference, and of course it needs
+to know where the source for the image is.
 
 ::
 	!img Some image title ^img_ref
-	!url 
+	!src https://some.tld/img.png
+	!caption A funny lemur in front of a wonderful landscape.
+	!width 80%
+
+Mandatory here is `!img` as well as the `!src` specification, which could be a
+URL or some relative path to the document. For instance, the following is a
+valid image inclusion:
+
+::
+	!img
+	!src some/relative/path.png
+
+TODO: re-add the reference block style image linking. That is, for images, we
+could use the same syntax as for references to have them in-line? But when would
+I need that?
+
+::
+	[image caption](img::http://...)^imgref_1 some text after
+	[image caption](img::relative/path.png)^imgref_2 some text after
+
+TODO: maybe allow `!img !src ...` ?
 
 
 ## References, links, literature, and images in Lemure ^references
 
+TODO: this section needs more love.
+
+References are introduces with `^` and used with `@`. This is actually inspired
+by pointers in the Pascal programming language, where `^` declares a pointer and
+`@` dereferences it.
+
 Linkin to a given reference like @references should produce text similar to
 "Subsection 4 (+ link)", meaning it's similar to latex' \ref{} command.
+
+The following are some tests for making the vim highlighting work. They are not
+complete, though, and they probably won't make any sense right now:
 
 this@sadfsdf @something sdf sdf 
 @something else
 
-Mails and URLs:
+Short versions of Mails and URLs:
 <mail@somedomain.tld> this is a mail address
-and some url which https://website.tld happens to be just in the text. shouldn't
-get a highlight, as we don't treat it differently.
+and some url which https://website.tld happens to be just in the text, and
+therefore not be treated in any special way. That is, it shouldn't get a
+highlight.
+
+The following are link-blocks
 [alternative text]@website this references a website that is specified further below
 [alternative text](https://somewebsite.tld) this directly references a website similar to markdown
 
@@ -218,9 +251,6 @@ in the end, maybe using raised numbers or so.
 [alternative text]@alice2024 and this here links only to one reference, and
 replaces the reference with the text.
 
-For images, we use the same syntax
-[image caption](img::http://...)^imgref_1 some text after
-[image caption](img::relative/path.png)^imgref_2 some text after
 
 [] some block with a box before that should not be highlighted
 
@@ -231,5 +261,6 @@ For images, we use the same syntax
 
 
 ## other links
+#
 ^website: <https://rochus.net>
 ^mail:    <rochus@rochus.net>
