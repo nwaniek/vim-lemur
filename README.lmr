@@ -1,0 +1,235 @@
+# What is LMR/lemur, why does it exist?
+
+.lmr is short for lemur and originally had a longer explanation for its name,
+but essentially it stands for a light markup language that is inspired primarily
+by reStructuredText, Markdown, and LaTeX. I developed it simply because I mostly
+like reStructuredText except for the headers, and started writing in a 'reduced'
+variant of it. I also wanted to have a bit more flexibility in expressing
+tables, in-line math, etc. that goes beyond Markdown. Using LaTeX all the way
+was also too exhausting. I thus set out to find a minimal set of things that
+make me happy and, importantly, that fit into my head. 
+
+Also, lemurs are cute.
+
+
+## Version, Stability, Language Specification ^version
+
+Version 0.0.1
+
+What? This sounds very unstable! -- Yes, this is a very early draft of lmr. It
+still evolves along my daily use so I wouldn't call it particulalry stable yet.
+That said, the things declared in this document are what I use most of the time
+and have settled on. I'm open for suggestions, as long as they are lightweight
+but allow some flexibility.
+
+There is not yet a specification besides this document as well as an
+accompanying vim syntax file. As a matter of fact, lmr is developed jointly with
+the vim syntax file.
+
+
+## Design Philosophy ^philosophy
+
+The design philisophy behind lemur is rather simple: It needs to fit into my
+head, and ideally uses keys that I have easily available on a keybord. Also, I
+rarely start a new line with `!` or `::`, so let's exploit this.
+
+
+## Special Keywords ^keywords
+
+The following are not really special keywords of lmr, but I use them often
+enough that I wanted to have them highlighted. 
+
+FIXME
+TODO
+NOTE
+
+
+## How to use tables ^tables
+
+
+Tables are declared by using a `!table` statement which needs to be the first on
+a line (except preceding whitespace), followed by an optinal human readable
+title of the table, followed by an optinal referene (see @references further
+below).
+
+That means that the following lines all declare a new table
+
+::
+	!table
+	!table human readable table name
+	!table some title ^table_ref
+	!table ^tab_ref
+
+The first line simply tells that there's a table.
+The second line declares a table with some table name
+The third line declares a table with a human readable name and a reference
+The fourth line declares a table without a title, but with a reference
+
+The next part of declaring a table is in specifying columns and their names.
+This also includes specifying column separators, and optionally an alignment
+attribute for each column. Examples might help:
+
+:: 
+	!cols First, Second, Third 
+	!cols First, Second; Third | Fourth
+	!cols First[l], Second[r] | Third[c]
+	!cols "Long header, with comma and escaped \" quotes"[c], "Second[yadda]"[r] 
+
+The first row introduces three columns, separated by `,`.
+The second row introduces four columns with separators `,`, `;`, and `|`.
+The third line adds alignment indicators in the square brackets, which are one
+of `l` for left alignment, `r` for right alignment, and `c` for center
+alignment.
+
+The fourth line shows some more advanced syntax. That is, to make things even
+more flexible, lmr allows to surround column names with `""`.  Thereby it's
+possible to use separators within a column name, and it's easier to handle
+whitespace, or square brackets. To use `"` within such a header definition,
+simply escape it using the `\` symbol, i.e. `\"` as on the fourth line.
+
+Then, there's also the possibility to add a caption to a table. This is done via
+
+::
+	!caption Here goes a long caption...
+
+
+
+Finally, you might want to separate some lines from each other in different
+ways. At the moment I use `===` and `---` to indicate separations. There might
+be more to come in the future (TODO), as well as indicating how the header (and
+maybe also a footer?) should be separated from the table contents.
+
+Putting all together, the following is an example of table.
+
+:: lemur
+
+	!table my-table ^table_ref
+	!cols Name, Age[r], Country[c] | "something else"
+	!caption Here goes a longer, optional caption of the table. This can span
+	multiple lines, but the multiple lines are now allowed to contain empty lines in
+	between. Otherwise it'll require more syntax, which I try to avoid.
+
+		Alice   , 30 , USA      | yes 
+		===
+		Bob     , 25 , Canada   | no
+		Charlie , 35 , UK       | yes
+		---
+		Steve   , 27 , Denmark  | yes
+
+
+
+## Inline Math ^inline_math
+
+I need math, often in some inline form, so we simply adopt LaTeX inline math
+with the difference of using two `$` instead of one: $$\sum_{i=1}^{10}{i^2}$$.
+If you want to have longer math, use a LaTeX code block (see @code_blocks).
+
+
+## Code Blocks ^code_blocks
+
+`this` was a code example.
+
+Some text where **this** is supposed to be bold and __this__ is italic.
+
+Bold italic: **__bold italic__**
+Italic bold: __**italic bold**__
+
+
+:: sh
+	#!/bin/sh
+
+	echo "hello world"
+
+
+::
+	code block without any language specification
+
+
+:: tex
+
+	\section{Hello World}
+
+	$\sum_{i=1}^{10}{i^2}$
+
+
+
+:: cpp
+
+	void main() {
+		std::string s = "1234";
+		this is still cpp
+		return 0;
+	}
+
+
+:: python
+
+	s = "1234"
+	def main():
+		print("Hello, World")
+
+::
+
+	@article{
+		author = {one, two},
+		journal = {journal of something}
+	}
+
+
+## Images
+
+I wanted to keep images separate from the text, so similar to the `!table`
+statement, there's and `!img` statement that can have a title, a reference, and
+of course it needs to know where the source for the image is.
+
+::
+	!img Some image title ^img_ref
+	!url 
+
+
+## References, links, literature, and images in Lemure ^references
+
+Linkin to a given reference like @references should produce text similar to
+"Subsection 4 (+ link)", meaning it's similar to latex' \ref{} command.
+
+this@sadfsdf @something sdf sdf 
+@something else
+
+Mails and URLs:
+<mail@somedomain.tld> this is a mail address
+and some url which https://website.tld happens to be just in the text. shouldn't
+get a highlight, as we don't treat it differently.
+[alternative text]@website this references a website that is specified further below
+[alternative text](https://somewebsite.tld) this directly references a website similar to markdown
+
+We could also use the following syntax, but provide a simpler version without an
+empty text:
+[](https://somewebsite.tld) this here does the same as 
+<https://somewebsite.tld> but the latter is a bit more concise
+
+[some text]@ref will write "some text" and link to ref
+
+Some more e:morexamples.
+@doe2025 will link directly to (internal) reference doe2025, and
+@(doe2025, alice2024) will link to both, doe2025 and alice2024
+here we go [better text]@(doe2025, alice2024) this here will reference both (i.e. similar
+to \cite{...} in latex) but somehow maps to both. however that would look like
+in the end, maybe using raised numbers or so.
+[alternative text]@alice2024 and this here links only to one reference, and
+replaces the reference with the text.
+
+For images, we use the same syntax
+[image caption](img::http://...)^imgref_1 some text after
+[image caption](img::relative/path.png)^imgref_2 some text after
+
+[] some block with a box before that should not be highlighted
+
+## Literature
+
+^doe2025:   John Doe, 2025, Journal of Does, Article Title, Publisher.
+^alice2024: Alice, A. 2024, Another Journal, Another Title, Pub2.
+
+
+## other links
+^website: <https://rochus.net>
+^mail:    <rochus@rochus.net>

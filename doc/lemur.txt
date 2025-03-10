@@ -1,0 +1,16 @@
+*vim-lemur.txt*    Syntax highlighting for Lemure
+
+INTRODUCTION
+    This plugin provides Vim syntax highlighting for the Lemure markup language.
+
+INSTALLATION
+    Use a plugin manager like vim-plug:
+    
+        Plug 'yourusername/vim-lemur'
+
+    Or manually:
+    
+        mkdir -p ~/.vim/{syntax,ftdetect,ftplugin,indent,doc}
+        cp syntax/lemur.vim ~/.vim/syntax/
+        cp ftdetect/lemur.vim ~/.vim/ftdetect/
+        cp doc/lemur.txt ~/.vim/doc/
