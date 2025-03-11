@@ -247,7 +247,7 @@ highlight.
 
 The following are link-blocks
 [alternative text]@website this references a website that is specified further below
-[alternative text](https://somewebsite.tld) this directly references a website similar to markdown
+[alternative text]@(https://somewebsite.tld) this directly references a website similar to markdown
 
 We could also use the following syntax, but provide a simpler version without an
 empty text:
