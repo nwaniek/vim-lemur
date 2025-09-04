@@ -155,8 +155,12 @@ Here are some examples:
 	echo "hello world"
 
 
-::
+:: ^s
 	code block without any language specification
+
+
+:: ^coderef
+	code block with code reference
 
 
 :: tex ^tex_code_block
@@ -175,7 +179,7 @@ Here are some examples:
 	}
 
 
-:: python
+:: python ^pyref
 
 	s = "1234"
 	def main():

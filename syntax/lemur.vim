@@ -14,51 +14,93 @@ syn keyword lemurTodo FIXME TODO XXX NOTE
 
 " Headers (Markdown style)
 syntax match lemurHeader /^##* .*$/
-			\ contains=lemurRefDeclInHeader
+			\ contains=lemurRefDeclContained
 
-" lemur (code block) directive (:: [language])
+syn match lemurCodeBlockLang 
+			\ /\s*\zs\(\w\+\)*/
+			\ contained
+
 syn match lemurCodeBlockHeader 
-			\ /^::\s*\(\k\+\)\?$/
+			\ /^::\s*.*/
+			\ contains=lemurCodeBlockLang,lemurRefDeclContained
+			\ contained
 
-" Define a general region for the code block
-syn region lemurCodeBlock 
-			\ contained 
-			\ matchgroup=lemurCodeBlockHeader 
-			\ fold
-			\ start=/^::\s*\(\k\+\)\?$/
-      		\ end=/^\ze\S/
-      		\ contains=@NoSpell
+syn region lemurCodeBlock
+			\ start=/^::.*$/
+ 			\ end=/^\ze\S/
+			\ contains=lemurCodeBlockHeader
+			\ keepend
+			\ extend
 
-" Define supported languages
-" TODO: bibtex support
-if !exists('g:lemur_syntax_code_list')
-    let g:lemur_syntax_code_list = {
-        \ 'cpp':    ['cpp', 'c++'],
-        \ 'python': ['python'],
-        \ 'java':   ['java'],
-        \ 'sh':     ['sh'],
-		\ 'tex':    ['latex', 'tex'],
-        \ }
-endif
+syn include @lemurCpp syntax/cpp.vim
+unlet! b:current_syntax
+syn match lemurCodeBlockHeaderCpp
+ 			\ /^::\s*cpp\>.*/
+			\ contains=lemurCodeBlockHeader
+			\ containedin=lemureCodeBlockCpp
+syn region lemurCodeBlockCpp
+ 			\ start=/^::\s*cpp\>.*/
+ 			\ end=/^\ze\S/
+ 			\ contains=lemurCodeBlockHeaderCpp,@lemurCpp
+			\ extend
+			\ keepend
 
-" Dynamically load syntax highlighting for each language
-for s:filetype in keys(g:lemur_syntax_code_list)
-    unlet! b:current_syntax
-    let s:alias_pattern = ''
-				\.'\%(' 
-				\.join(g:lemur_syntax_code_list[s:filetype], '\|') 
-				\. '\)'
 
-    exe 'syn include @lemur'.s:filetype.' syntax/'.s:filetype.'.vim'
-    exe 'syn region lemurCodeBlock'.s:filetype
-                \.' matchgroup=lemurCodeBlockHeader fold'
-                \.' start="^::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)"'
-                \.' skip="^$"'
-				\.' end="^\z1\@!"'
-                \.' contains=@NoSpell,@lemur'.s:filetype
+syn include @lemurPython syntax/python.vim
+unlet! b:current_syntax
+syn match lemurCodeBlockHeaderPython
+ 			\ /^::\s*python\>.*/
+			\ contains=lemurCodeBlockHeader
+			\ contained
+syn region lemurCodeBlockPython
+ 			\ start=/^::\s*python\>.*/
+ 			\ end=/^\ze\S/
+ 			\ contains=lemurCodeBlockHeaderPython,@lemurPython
+			\ extend
+			\ keepend
 
-    exe 'syn cluster lemurCodeDirectives add=lemurCodeBlock'.s:filetype
-endfor
+
+syn include @lemurJava syntax/java.vim
+unlet! b:current_syntax
+syn match lemurCodeBlockHeaderJava
+ 			\ /^::\s*java\>.*/
+			\ contains=lemurCodeBlockHeader
+			\ contained
+syn region lemurCodeBlockJava
+ 			\ start=/^::\s*java\>.*/
+ 			\ end=/^\ze\S/
+ 			\ contains=lemurCodeBlockHeaderJava,@lemurJava
+			\ extend
+			\ keepend
+
+
+syn include @lemurTex syntax/tex.vim
+unlet! b:current_syntax
+syn match lemurCodeBlockHeaderTex
+ 			\ /^::\s*tex\>.*/
+			\ contains=lemurCodeBlockHeader
+			\ contained
+syn region lemurCodeBlockTex
+ 			\ start=/^::\s*tex\>.*/
+ 			\ end=/^\ze\S/
+ 			\ contains=lemurCodeBlockHeaderTex,@lemurTex
+			\ extend
+			\ keepend
+
+
+syn include @lemurShell syntax/sh.vim
+unlet! b:current_syntax
+syn match lemurCodeBlockHeaderShell
+ 			\ /^::\s*sh\>.*/
+			\ contains=lemurCodeBlockHeader
+			\ contained
+syn region lemurCodeBlockShell
+ 			\ start=/^::\s*sh\>.*/
+ 			\ end=/^\ze\S/
+ 			\ contains=lemurCodeBlockHeaderShell,@lemurShell
+			\ extend
+			\ keepend
+
 
 " inline math mode with $$...$$
 syn region lemurInlineMath start="\\\@<!\$\$" end="\$\$" skip="\\\$" contains=@lemurtex keepend
@@ -88,7 +130,7 @@ syn region lemurItalicBold
 syn match lemurRefDecl
 			\ /\v^\s*\^(\w+):/
 
-syn match lemurRefDeclInHeader 
+syn match lemurRefDeclContained 
 			\ /\v\^(\w+)\s*$/
 			\ contained
 
@@ -138,24 +180,27 @@ hi def link lemurItalic            Italic
 hi def link lemurBold              Bold
 hi def link lemurBoldItalic        BoldItalic
 hi def link lemurItalicBold        BoldItalic
-hi def link lemurCodeBlockHeader   PreProc
 hi def link lemurInlineMath        Statement
 
 
-hi def link lemurLinkBlock					Statement
-hi def link lemurLinkText					Statement
-hi def link lemurLinkRefs					Function
-hi def link lemurLinkURL					Function
-hi def link lemurLinkImg					Function
+hi def link lemurCodeBlockLang     Statement
+hi def link lemurCodeBlockHeader   PreProc
+hi def link lemurCodeBlock         Statement
 
-hi def link lemurInlineRefs				Function
+hi def link lemurLinkBlock         Statement
+hi def link lemurLinkText          Statement
+hi def link lemurLinkRefs          Function
+hi def link lemurLinkURL           Function
+hi def link lemurLinkImg           Function
 
-hi def link lemurEmail						String
-hi def link lemurLink						String
-hi def link lemurShortURL					String
+hi def link lemurInlineRefs        Function
 
-hi def link lemurRefDecl			Identifier
-hi def link lemurRefDeclInHeader	Identifier
+hi def link lemurEmail             String
+hi def link lemurLink              String
+hi def link lemurShortURL          String
+
+hi def link lemurRefDecl           Identifier
+hi def link lemurRefDeclContained  Identifier
 
 
 " Highlight !table and its reference
@@ -180,5 +225,5 @@ hi def link lemurTableSeparator Operator
 hi def link lemurTableAlign Special
  
 " Match table rows (indented lines after !cols)
-syn region lemurTableRow start=/^\s\{1,}/ end=/$/ contains=lemurTableSeparator
-hi def link lemurTableRow Normal
+" syn region lemurTableRow start=/^\s\{1,}/ end=/$/ contains=lemurTableSeparator
+" hi def link lemurTableRow Normal
