@@ -17,7 +17,7 @@ syntax match lemurHeader /^##* .*$/
 			\ contains=lemurRefDeclContained
 
 syn match lemurCodeBlockLang 
-			\ /\s*\zs\(\w\+\)*/
+			\ /\s*\zs[0-9A-Za-z_+\#-]\+/
 			\ contained
 
 syn match lemurCodeBlockHeader 
@@ -32,74 +32,44 @@ syn region lemurCodeBlock
 			\ keepend
 			\ extend
 
-syn include @lemurCpp syntax/cpp.vim
-unlet! b:current_syntax
-syn match lemurCodeBlockHeaderCpp
- 			\ /^::\s*cpp\>.*/
-			\ contains=lemurCodeBlockHeader
-			\ containedin=lemureCodeBlockCpp
-syn region lemurCodeBlockCpp
- 			\ start=/^::\s*cpp\>.*/
- 			\ end=/^\ze\S/
- 			\ contains=lemurCodeBlockHeaderCpp,@lemurCpp
-			\ extend
-			\ keepend
+" dynamic generation of code blocks for other languages
+if !exists('g:lemur_syntax_code_list')
+    let g:lemur_syntax_code_list = {
+        \ 'cpp':     ['cpp', 'c++'],
+		\ 'cs':      ['csharp', 'c#', 'cs'],
+		\ 'css':     ['css'],
+		\ 'erlang':  ['erlang'],
+		\ 'haskell': ['haskell', 'hs'],
+        \ 'java':    ['java'],
+		\ 'make':    ['make', 'Makefile'],
+        \ 'python':  ['python'],
+        \ 'sh':      ['sh'],
+		\ 'tex':     ['latex', 'tex'],
+        \ }
+endif
 
+for s:filetype in keys(g:lemur_syntax_code_list)
+	" build the alias pattern
+	let s:alias_pattern = '\%('.join(g:lemur_syntax_code_list[s:filetype], '\|').'\)'
 
-syn include @lemurPython syntax/python.vim
-unlet! b:current_syntax
-syn match lemurCodeBlockHeaderPython
- 			\ /^::\s*python\>.*/
-			\ contains=lemurCodeBlockHeader
-			\ contained
-syn region lemurCodeBlockPython
- 			\ start=/^::\s*python\>.*/
- 			\ end=/^\ze\S/
- 			\ contains=lemurCodeBlockHeaderPython,@lemurPython
-			\ extend
-			\ keepend
+	" include corresponding syntax file
+	exe 'syn include @lemur'.s:filetype.' syntax/'.s:filetype.'.vim'
+	unlet! b:current_syntax
 
+	" build the header for this language
+	exe 'syn match lemurCodeBlockHeader'.s:filetype 
+				\. ' /^::\s*'.s:alias_pattern.'\%(\s\|$\).*/'
+				\. ' contains=lemurCodeBlockHeader'
+				\. ' containedin=lemurCodeBlock'.s:filetype
 
-syn include @lemurJava syntax/java.vim
-unlet! b:current_syntax
-syn match lemurCodeBlockHeaderJava
- 			\ /^::\s*java\>.*/
-			\ contains=lemurCodeBlockHeader
-			\ contained
-syn region lemurCodeBlockJava
- 			\ start=/^::\s*java\>.*/
- 			\ end=/^\ze\S/
- 			\ contains=lemurCodeBlockHeaderJava,@lemurJava
-			\ extend
-			\ keepend
-
-
-syn include @lemurTex syntax/tex.vim
-unlet! b:current_syntax
-syn match lemurCodeBlockHeaderTex
- 			\ /^::\s*tex\>.*/
-			\ contains=lemurCodeBlockHeader
-			\ contained
-syn region lemurCodeBlockTex
- 			\ start=/^::\s*tex\>.*/
- 			\ end=/^\ze\S/
- 			\ contains=lemurCodeBlockHeaderTex,@lemurTex
-			\ extend
-			\ keepend
-
-
-syn include @lemurShell syntax/sh.vim
-unlet! b:current_syntax
-syn match lemurCodeBlockHeaderShell
- 			\ /^::\s*sh\>.*/
-			\ contains=lemurCodeBlockHeader
-			\ contained
-syn region lemurCodeBlockShell
- 			\ start=/^::\s*sh\>.*/
- 			\ end=/^\ze\S/
- 			\ contains=lemurCodeBlockHeaderShell,@lemurShell
-			\ extend
-			\ keepend
+	" build the code-block region for this
+	exe 'syn region lemurCodeBlock'.s:filetype
+				\. ' start=/^::\s*'.s:alias_pattern.'\%(\s\|$\).*/'
+				\. ' end=/^\ze\S/'
+				\. ' contains=lemurCodeBlockHeader'.s:filetype.',@lemur'.s:filetype
+				\. ' extend'
+				\. ' keepend'
+endfor
 
 
 " inline math mode with $$...$$
