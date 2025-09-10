@@ -96,6 +96,9 @@ syn region lemurItalicBold
 			\ end="\S\@<=\*\*__\|^$" 
 			\ skip="\\\*_" 
 
+syn match lemurInlineCode
+			\ /``\([^`\\]\|\\.\)*``/
+
 " reference declaration
 syn match lemurRefDecl
 			\ /\v^\s*\^(\w+):/
@@ -151,6 +154,7 @@ hi def link lemurBold              Bold
 hi def link lemurBoldItalic        BoldItalic
 hi def link lemurItalicBold        BoldItalic
 hi def link lemurInlineMath        Statement
+hi def link lemurInlineCode        Statement
 
 
 hi def link lemurCodeBlockLang     Statement
