@@ -35,6 +35,7 @@ syn region lemurCodeBlock
 " dynamic generation of code blocks for other languages
 if !exists('g:lemur_syntax_code_list')
     let g:lemur_syntax_code_list = {
+		\ 'c':       ['c'],
         \ 'cpp':     ['cpp', 'c++'],
 		\ 'cs':      ['csharp', 'c#', 'cs'],
 		\ 'css':     ['css'],
